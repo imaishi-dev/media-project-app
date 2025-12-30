@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 
 export default function Home() {
+  const videoUrl = process.env.NEXT_PUBLIC_VIDEO_URL || '/sample02.mp4';
   const videoRef = useRef(null);
   const [comment, setComment] = useState('');
   const [times, setTimes] = useState([]);
@@ -70,7 +71,7 @@ export default function Home() {
         <div className='layout'>
           <section className='panel'>
             <div className='video-wrap'>
-              <video src='/sample02.mp4' ref={videoRef} controls></video>
+              <video src={videoUrl} ref={videoRef} controls></video>
             </div>
             <div className='input-row'>
               <input
