@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --pico-font-family: 'Space Grotesk', 'Noto Sans JP', system-ui, sans-serif;
+  --pico-primary: #1c7c7c;
+  --pico-primary-hover: #166262;
+  --pico-primary-focus: rgba(28, 124, 124, 0.2);
+  --pico-muted-border-color: rgba(18, 23, 37, 0.12);
+  --background: #f6f3ee;
+  --foreground: #141414;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--pico-font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
