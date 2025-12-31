@@ -1,32 +1,58 @@
+import { NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 
-const dbPath = path.join(process.cwd(), 'db.json');
+const DB_PATH = path.join(process.cwd(), 'db.json');
 
-const readDb = async () => {
+const isVercel = !!process.env.VERCEL;
+
+async function readDb() {
   try {
-    const raw = await fs.readFile(dbPath, 'utf8');
-    return JSON.parse(raw);
-  } catch (err) {
-    if (err.code === 'ENOENT') {
-      return [];
-    }
-    throw err;
+    const text = await fs.readFile(DB_PATH, 'utf-8');
+    return JSON.parse(text);
+  } catch (e) {
+    return { items: [] };
   }
-};
+}
 
-const writeDb = async (data) => {
-  await fs.writeFile(dbPath, JSON.stringify(data, null, 2));
-};
-
-export async function GET() {
-  const savedChapters = await readDb();
-  return Response.json(savedChapters);
+async function writeDb(data) {
+  const text = JSON.stringify(data, null, 2);
+  await fs.writeFile(DB_PATH, text, 'utf-8');
 }
 
 export async function POST(request) {
-  const data = await request.json();
-  await writeDb(data);
+  try {
+    const payload = await request.json();
 
-  return Response.json({ message: '保存しました！', received: data });
+    if (isVercel) {
+      console.log('[DEMO] save payload:', payload);
+      return NextResponse.json({
+        success: true,
+        mode: 'demo',
+        message: 'Vercelでは保存せず、受信のみ行いました',
+      });
+    }
+
+    const db = await readDb();
+
+    db.items.unshift({
+      id: crypto.randomUUID(),
+      payload,
+      createdAt: new Date().toISOString(),
+    });
+
+    await writeDb(db);
+
+    return NextResponse.json({
+      success: true,
+      mode: 'local',
+      message: 'ローカルの db.json に保存しました',
+    });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json(
+      { success: false, message: 'サーバー処理に失敗しました' },
+      { status: 500 }
+    );
+  }
 }

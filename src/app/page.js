@@ -31,26 +31,35 @@ export default function Home() {
 
     const response = await fetch('/api/save', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(times),
     });
 
-    const result = await response.json();
-    console.log(result);
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : {};
+
+    if (!response.ok) {
+      alert(data.message || '保存に失敗しました');
+      return;
+    }
+
     setTimes([]);
-    alert(result.message);
+    alert(data.message || '保存しました');
   };
 
   const loadFromServer = async () => {
-    const response = await fetch('/api/save', {
-      method: 'GET',
-    });
+    const response = await fetch('/api/save', { method: 'GET' });
 
-    const data = await response.json();
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : [];
+
+    if (!response.ok) {
+      alert(data.message || '読み込みに失敗しました');
+      return;
+    }
+
     console.log('読み込んだデータ:', data);
-    setTimes(data);
+    setTimes(Array.isArray(data) ? data : []);
   };
 
   return (
