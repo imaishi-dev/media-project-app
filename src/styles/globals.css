@@ -1,13 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;600&family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap');
 
 :root {
-  --pico-font-family: 'Space Grotesk', 'Noto Sans JP', system-ui, sans-serif;
-  --pico-primary: #1c7c7c;
-  --pico-primary-hover: #166262;
-  --pico-primary-focus: rgba(28, 124, 124, 0.2);
-  --pico-muted-border-color: rgba(18, 23, 37, 0.12);
-  --background: #f6f3ee;
-  --foreground: #141414;
+  --pico-font-family: 'M PLUS Rounded 1c', 'Noto Sans JP', system-ui, sans-serif;
+  --display-font: 'Bebas Neue', 'M PLUS Rounded 1c', sans-serif;
+  --mono-font: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --brand-red: #e60012;
+  --brand-red-dark: #b8000f;
+  --brand-red-soft: #ffe7ea;
+  --brand-ink: #1b1b1b;
+  --brand-paper: #fff6f2;
+  --pico-primary: var(--brand-red);
+  --pico-primary-hover: var(--brand-red-dark);
+  --pico-primary-focus: rgba(230, 0, 18, 0.18);
+  --pico-muted-border-color: rgba(230, 0, 18, 0.18);
+  --background: var(--brand-paper);
+  --foreground: var(--brand-ink);
 }
 
 html,

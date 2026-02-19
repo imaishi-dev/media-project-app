@@ -6,13 +6,48 @@ const DB_PATH = path.join(process.cwd(), 'db.json');
 
 const isVercel = !!process.env.VERCEL;
 
-async function readDb() {
+async function readDbRaw() {
   try {
     const text = await fs.readFile(DB_PATH, 'utf-8');
     return JSON.parse(text);
   } catch (e) {
-    return { items: [] };
+    return [];
   }
+}
+
+function normalizeDb(raw) {
+  if (raw && Array.isArray(raw.items)) {
+    return raw;
+  }
+
+  if (Array.isArray(raw)) {
+    return {
+      items: [
+        {
+          id: crypto.randomUUID(),
+          payload: raw,
+          createdAt: new Date().toISOString(),
+        },
+      ],
+    };
+  }
+
+  return { items: [] };
+}
+
+function extractTimes(raw) {
+  if (Array.isArray(raw)) {
+    return raw;
+  }
+
+  if (raw && Array.isArray(raw.items)) {
+    const latest = raw.items[0];
+    if (Array.isArray(latest?.payload)) {
+      return latest.payload;
+    }
+  }
+
+  return [];
 }
 
 async function writeDb(data) {
@@ -33,7 +68,8 @@ export async function POST(request) {
       });
     }
 
-    const db = await readDb();
+    const raw = await readDbRaw();
+    const db = normalizeDb(raw);
 
     db.items.unshift({
       id: crypto.randomUUID(),
@@ -48,6 +84,20 @@ export async function POST(request) {
       mode: 'local',
       message: 'ローカルの db.json に保存しました',
     });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json(
+      { success: false, message: 'サーバー処理に失敗しました' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    const raw = await readDbRaw();
+    const times = extractTimes(raw);
+    return NextResponse.json(times);
   } catch (e) {
     console.error(e);
     return NextResponse.json(
